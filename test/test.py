@@ -1,4 +1,3 @@
 import tensorflow as tf
 
-tf.estimator
-
+print(tf.__version__)
