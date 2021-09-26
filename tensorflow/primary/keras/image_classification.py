@@ -58,7 +58,7 @@ model.fit(train_images, train_labels, epochs=1)
 
 # 评估模型
 test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
-print('\nTest accuracy: ', test_acc*100, '%')
+print('\nTest accuracy: ', test_acc * 100, '%')
 '''
     过拟合：在评估模型时，训练准确率和测试准确率之间的差距
 '''
@@ -72,6 +72,8 @@ print('\nTest accuracy: ', test_acc*100, '%')
 '''
 probability_model = keras.Sequential([model, keras.layers.Softmax()])
 predictions = probability_model.predict(test_images)
+
+
 # print('softmax: ', predictions[0])
 
 # # np.argmax 返回数组中最大数的坐标
@@ -84,7 +86,7 @@ def plot_image(i, predictions_array, true_label, img):
     plt.xticks([])
     plt.yticks([])
 
-    plt.imshow(img, cmap=plt.cm.binary)
+    plt.imshow(img, cmap=plt.cm.binary)  # binary 即黑白图片
 
     predicted_label = np.argmax(predictions_array)
     if predicted_label == true_label:
@@ -97,17 +99,30 @@ def plot_image(i, predictions_array, true_label, img):
                                          class_names[true_label],
                                          color=color))
 
+
 # softmax 每类的概率柱状图
 def plot_value_array(i, predictions_array, true_label):
     predictions_array, true_label = predictions_array, true_label[i]
     plt.grid(False)
     plt.xticks(range(10))
     plt.yticks([])
-    thisplot=plt.bar(range(10), predictions_array, color='#666666')
+    thisplot = plt.bar(range(10), predictions_array, color='#666666')
     plt.ylim([0, 1])
     predicted_label = np.argmax(predictions_array)
 
     thisplot[predicted_label].set_color('red')
     thisplot[true_label].set_color('blue')
 
-# 以
+
+# 画几张图查看一下预测的对不对
+num_rows = 5
+num_cols = 3
+num_images = num_rows * num_cols
+plt.figure(figsize=(2 * 2 * num_cols, 2 * num_rows))
+for i in range(num_images):
+    plt.subplot(num_rows, 2 * num_cols, 2 * i + 1)
+    plot_image(i, predictions[i], test_labels, test_images)
+    plt.subplot(num_rows, 2 * num_cols, 2 * i + 2)
+    plot_value_array(i, predictions[i], test_labels)
+plt.tight_layout()  # 缩小页边距
+plt.show()
