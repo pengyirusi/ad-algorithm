@@ -1,7 +1,9 @@
-import tensorflow as tf
+# -*- coding: utf-8 -*-
+"""
+    @Author : weiyupeng
+    @Time : 2021/9/26 21:32
+"""
 from tensorflow import keras
-
-import numpy as np
 
 # 导入数据集
 # 二分类 电影评论 1-positive 0-negative
@@ -51,7 +53,6 @@ test_data = keras.preprocessing.sequence.pad_sequences(test_data,
                                                        padding='post',
                                                        maxlen=256)
 
-
 # 构建模型
 vocab_size = 10000
 model = keras.Sequential()
@@ -71,14 +72,56 @@ model.compile(optimizer='adam',  # 优化器
               loss='binary_crossentropy',  # 损失函数 交叉熵
               metrics=['accuracy'])  # 指标
 
+# 验证集
+# 在训练根据验证集的结果对模型进行调整
+x_val = train_data[:10000]
+partial_x_train = train_data[10000:]
+y_val = train_labels[:10000]
+partial_y_train = train_labels[10000:]
 
+# 训练模型
+history = model.fit(partial_x_train,
+                    partial_y_train,
+                    epochs=40,
+                    batch_size=512,
+                    validation_data=(x_val, y_val),
+                    verbose=1)  # 0=无提示，1=进度条，2=每个epoch一行
 
+# 评估模型
+results = model.evaluate(test_data, test_labels, verbose=2)
+print(results)
 
+history_dict = history.history
+history_dict.keys()
+print(
+    history_dict)  # {'loss': [0.6920368075370789], 'accuracy': [0.5683333277702332], 'val_loss': [0.6900328397750854], 'val_accuracy': [0.6891999840736389]}
 
+# 画一个准确率和损失值随时间变化的折线图
+import matplotlib.pyplot as plt
 
+acc = history_dict['accuracy']
+val_acc = history_dict['val_accuracy']
+loss = history_dict['loss']
+val_loss = history_dict['val_loss']
 
+epochs = range(1, len(acc) + 1)
 
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
 
+plt.show()
 
+plt.clf()  # 清除数字
 
+plt.plot(epochs, acc, 'bo', label='Training acc')  # bo = blue-o
+plt.plot(epochs, val_acc, 'b', label='Validation acc')  # b = blue-line
+plt.title('Training and validation accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
 
+plt.show()

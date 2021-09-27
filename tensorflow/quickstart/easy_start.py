@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+    @Author : weiyupeng
+    @Time : 2021/9/24 19:58
+"""
 import tensorflow as tf
 
 # 获取 mnist 数据集
