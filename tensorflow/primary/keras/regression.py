@@ -36,11 +36,18 @@ dataset = dataset.dropna()  # 去掉 Nan 的数据
 # print(dataset.isna().sum())  # 又看一眼 果然删了
 
 
+# category -> one-hot
 origin = dataset.pop("Origin")
 dataset['USA'] = (origin == 1) * 1.0
 dataset['Europe'] = (origin == 2) * 1.0
 dataset['Japan'] = (origin == 3) * 1.0
+
+
 # print(dataset.head())
+# print(type(dataset))  # <class 'pandas.core.frame.DataFrame'>
+# pd.set_option('display.max_columns', None)  # 显示所有列，解决显示不全的问题
+# print(dataset[0:2])  # 前两排
+# print(dataset.iloc[0, :])  # 第一行
 
 
 # 建立训练集和测试集
@@ -120,7 +127,7 @@ class PrintDot(keras.callbacks.Callback):
         print('.', end='')
 
 
-EPOCH = 1000
+EPOCH = 1  # 1000
 history = model.fit(
     norm_train_data, train_labels,
     epochs=EPOCH, validation_split=0.2,  # 验证集比例
